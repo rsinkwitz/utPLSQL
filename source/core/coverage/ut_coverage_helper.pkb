@@ -170,5 +170,10 @@ create or replace package body ut_coverage_helper is
     return l_result;
   end;
 
+  procedure set_coverage_id(a_coverage_id integer) is
+  begin
+    g_coverage_id := a_coverage_id;
+  end;
+
 end;
 /

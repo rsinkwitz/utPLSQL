@@ -71,6 +71,9 @@ create or replace package body ut_runner is
   ) is
     l_items_to_run ut_run;
     l_listener     ut_event_listener;
+    l_suite_items  ut_suite_items;
+    l_include_names ut_object_names;
+    l_ext_coverage ut_ext_coverage;
   begin
     begin
       ut_expectation_processor.reset_invalidation_exception();
@@ -82,12 +85,20 @@ create or replace package body ut_runner is
       else
         l_listener := ut_event_listener(a_reporters);
       end if;
+      l_include_names := to_ut_object_list(a_include_objects); 
+      if a_paths.count > 0 and regexp_like(a_paths(1), '^((ext(ernal)?_)?coverage|run-?id)[:=]', 'i') then
+        l_ext_coverage := ut_ext_coverage(a_paths(1));
+        l_suite_items := ut_suite_items(l_ext_coverage);
+        l_ext_coverage.addProfilerUnitsTo(l_include_names);
+      else
+        l_suite_items := ut_suite_manager.configure_execution_by_path(a_paths);
+      end if;
       l_items_to_run := ut_run(
-        ut_suite_manager.configure_execution_by_path(a_paths),
+        l_suite_items,
         a_paths,
         ut_utils.convert_collection(a_coverage_schemes),
         to_ut_object_list(a_exclude_objects),
-        to_ut_object_list(a_include_objects),
+        l_include_names,
         set(a_source_file_mappings),
         set(a_test_file_mappings)
       );
@@ -161,7 +172,7 @@ create or replace package body ut_runner is
                   ELSE ''N''
               END
           is_output_reporter
-      FROM dba_types t
+      FROM all_types t
       WHERE instantiable = ''YES''
       CONNECT BY supertype_name = PRIOR type_name AND supertype_owner = PRIOR owner
         START WITH type_name = ''UT_REPORTER_BASE'' AND owner = '''|| l_owner || '''';

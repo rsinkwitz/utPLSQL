@@ -212,6 +212,8 @@ drop type ut_run force;
 
 drop type ut_coverage_options force;
 
+drop type ut_ext_coverage force;
+
 drop type ut_file_mappings force;
 
 drop type ut_file_mapping force;

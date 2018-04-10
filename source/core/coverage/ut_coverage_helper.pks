@@ -76,5 +76,7 @@ create or replace package ut_coverage_helper authid definer is
 
   function get_tmp_table_object_lines(a_owner varchar2, a_object_name varchar2) return ut_varchar2_list;
 
+  procedure set_coverage_id(a_coverage_id integer);
+
 end;
 /

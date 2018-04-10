@@ -64,10 +64,11 @@ create or replace package body ut_coverage is
                       or lower(s.text) like '%begin%'
                       or lower(s.text) like '%end%'
                       or lower(s.text) like '%package%'
+                      or lower(s.text) like '%$revision:%$%'
                      ) and
                      regexp_like(
                         s.text,
-                        '^([\t ]*(((not)?\s*(overriding|final|instantiable)[\t ]*)*(static|constructor|member)?[\t ]*(procedure|function)|package([\t ]+body)|begin|end([\t ]+\S+)*[ \t]*;))', 'i'
+                        '^([\t ]*(((not)?\s*(overriding|final|instantiable)[\t ]*)*(static|constructor|member)?[\t ]*(procedure|function)|package([\t ]+body)|begin|end([\t ]+\S+)*[ \t]*;|return\s*\(\s*''\$revision:\s*[0-9.]+\s*\$''\s*\)\s*;))', 'i'
                      )
                     then 'Y'
                  end as to_be_skipped

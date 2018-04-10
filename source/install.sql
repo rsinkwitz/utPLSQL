@@ -29,6 +29,11 @@ whenever oserror exit failure rollback
 prompt Switching current schema to &&ut3_owner
 prompt &&line_separator
 alter session set current_schema = &&ut3_owner;
+-- sra debug
+alter session set plsql_debug = true;
+alter session set plsql_optimize_level = 1;
+alter session set PLSQL_Warnings = 'enable:all';
+--alter session set PLSQL_CCFlags = 'ut_trace:true';
 --set define off
 
 --dbms_output buffer cache table
@@ -66,6 +71,7 @@ alter session set current_schema = &&ut3_owner;
 @@install_component.sql 'core/types/ut_file_mapping.tps'
 @@install_component.sql 'core/types/ut_file_mappings.tps'
 @@install_component.sql 'core/types/ut_coverage_options.tps'
+@@install_component.sql 'core/types/ut_ext_coverage.tps'
 @@install_component.sql 'core/types/ut_run.tps'
 @@install_component.sql 'core/types/ut_reporter_base.tps'
 @@install_component.sql 'core/types/ut_reporters.tps'
@@ -133,6 +139,7 @@ prompt Installing PLSQL profiler objects into &&ut3_owner schema
 @@install_component.sql 'core/types/ut_test.tpb'
 @@install_component.sql 'core/types/ut_logical_suite.tpb'
 @@install_component.sql 'core/types/ut_suite.tpb'
+@@install_component.sql 'core/types/ut_ext_coverage.tpb'
 @@install_component.sql 'core/types/ut_run.tpb'
 @@install_component.sql 'core/types/ut_event_listener.tpb'
 @@install_component.sql 'core/types/ut_expectation_result.tpb'
