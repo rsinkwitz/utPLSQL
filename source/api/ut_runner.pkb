@@ -172,7 +172,7 @@ create or replace package body ut_runner is
                   ELSE ''N''
               END
           is_output_reporter
-      FROM all_types t
+      FROM dba_types t
       WHERE instantiable = ''YES''
       CONNECT BY supertype_name = PRIOR type_name AND supertype_owner = PRIOR owner
         START WITH type_name = ''UT_REPORTER_BASE'' AND owner = '''|| l_owner || '''';
