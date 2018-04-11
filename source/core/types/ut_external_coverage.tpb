@@ -1,5 +1,5 @@
 create or replace 
-type body ut_ext_coverage as
+type body ut_external_coverage as
   /*
   utPLSQL - Version X.X.X.X
   Copyright 2016 - 2017 utPLSQL Project
@@ -17,8 +17,8 @@ type body ut_ext_coverage as
   limitations under the License.
   */
 
-  constructor function ut_ext_coverage(
-    self in out nocopy ut_ext_coverage, a_coverage_id integer, a_description varchar2 := null, a_path varchar2
+  constructor function ut_external_coverage(
+    self in out nocopy ut_external_coverage, a_coverage_id integer, a_description varchar2 := null, a_path varchar2
   ) return self as result is
   begin
     self.self_type := $$plsql_unit;
@@ -27,8 +27,8 @@ type body ut_ext_coverage as
     return;
   end;
 
-  constructor function ut_ext_coverage(
-    self in out nocopy ut_ext_coverage, a_path varchar2
+  constructor function ut_external_coverage(
+    self in out nocopy ut_external_coverage, a_path varchar2
   ) return self as result is
     l_path varchar2(4000); 
     l_runid integer;
@@ -41,24 +41,24 @@ type body ut_ext_coverage as
     return;  
   end;
 
-  overriding member procedure mark_as_skipped(self in out nocopy ut_ext_coverage, a_listener in out nocopy ut_event_listener_base) is
+  overriding member procedure mark_as_skipped(self in out nocopy ut_external_coverage, a_listener in out nocopy ut_event_listener_base) is
   begin
     null;
   end;
 
-  overriding member function do_execute(self in out nocopy ut_ext_coverage, a_listener in out nocopy ut_event_listener_base) return boolean is
+  overriding member function do_execute(self in out nocopy ut_external_coverage, a_listener in out nocopy ut_event_listener_base) return boolean is
   begin
-    ut_utils.debug_log('ut_ext_coverage.execute');
+    ut_utils.debug_log('ut_external_coverage.execute');
     ut_coverage_helper.set_coverage_id(coverage_id);
     return true;
   end;
 
-  overriding member procedure calc_execution_result(self in out nocopy ut_ext_coverage) is
+  overriding member procedure calc_execution_result(self in out nocopy ut_external_coverage) is
   begin
     self.result := ut_utils.tr_success;
   end;
 
-  overriding member procedure mark_as_errored(self in out nocopy ut_ext_coverage, a_listener in out nocopy ut_event_listener_base, a_error_stack_trace varchar2) is
+  overriding member procedure mark_as_errored(self in out nocopy ut_external_coverage, a_listener in out nocopy ut_event_listener_base, a_error_stack_trace varchar2) is
   begin
     null;
   end;
@@ -77,8 +77,8 @@ type body ut_ext_coverage as
   begin
     return self.transaction_invalidators;
   end;
-
-  member procedure addProfilerUnitsTo(a_names in out ut_object_names) is
+  
+  member procedure add_profiler_units_to(self in out nocopy ut_external_coverage, a_names in out nocopy ut_object_names) is
   begin
     SELECT ut_object_name(unit_owner, unit_name)
      BULK COLLECT INTO a_names
@@ -86,5 +86,10 @@ type body ut_ext_coverage as
     WHERE runid = self.coverage_id;
   end;
   
+  static function is_external(path varchar2) return boolean is
+  begin
+    return regexp_like(path, '^((ext(ernal)?_)?coverage|run-?id)[:=]', 'i');
+  end;
+
 end;
 /

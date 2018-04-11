@@ -69,11 +69,11 @@ create or replace package body ut_runner is
     a_coverage_schemes ut_varchar2_list := null, a_source_file_mappings ut_file_mappings := null, a_test_file_mappings ut_file_mappings := null,
     a_include_objects ut_varchar2_list := null, a_exclude_objects ut_varchar2_list := null, a_fail_on_errors boolean default false
   ) is
-    l_items_to_run ut_run;
-    l_listener     ut_event_listener;
-    l_suite_items  ut_suite_items;
-    l_include_names ut_object_names;
-    l_ext_coverage ut_ext_coverage;
+    l_items_to_run      ut_run;
+    l_listener          ut_event_listener;
+    l_suite_items       ut_suite_items;
+    l_include_names     ut_object_names;
+    l_external_coverage ut_external_coverage;
   begin
     begin
       ut_expectation_processor.reset_invalidation_exception();
@@ -86,10 +86,10 @@ create or replace package body ut_runner is
         l_listener := ut_event_listener(a_reporters);
       end if;
       l_include_names := to_ut_object_list(a_include_objects); 
-      if a_paths.count > 0 and regexp_like(a_paths(1), '^((ext(ernal)?_)?coverage|run-?id)[:=]', 'i') then
-        l_ext_coverage := ut_ext_coverage(a_paths(1));
-        l_suite_items := ut_suite_items(l_ext_coverage);
-        l_ext_coverage.addProfilerUnitsTo(l_include_names);
+      if a_paths.count > 0 and ut_external_coverage.is_external(a_paths(1)) then
+        l_external_coverage := ut_external_coverage(a_paths(1));
+        l_external_coverage.add_profiler_units_to(l_include_names);
+        l_suite_items := ut_suite_items(l_external_coverage);
       else
         l_suite_items := ut_suite_manager.configure_execution_by_path(a_paths);
       end if;
