@@ -55,7 +55,7 @@ type body ut_external_coverage as
 
   overriding member procedure calc_execution_result(self in out nocopy ut_external_coverage) is
   begin
-    self.result := ut_utils.tr_success;
+    self.result := ut_utils.gc_success;
   end;
 
   overriding member procedure mark_as_errored(self in out nocopy ut_external_coverage, a_listener in out nocopy ut_event_listener_base, a_error_stack_trace varchar2) is

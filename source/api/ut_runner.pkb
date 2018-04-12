@@ -96,11 +96,6 @@ create or replace package body ut_runner is
       else
         l_listener := ut_event_listener(a_reporters);
       end if;
-      if a_coverage_schemes is not empty then
-        l_coverage_schema_names := ut_utils.convert_collection(a_coverage_schemes);
-      else
-        l_coverage_schema_names := ut_suite_manager.get_schema_names(a_paths);
-      end if;
 
       if a_exclude_objects is not empty then
         l_exclude_object_names := to_ut_object_list(a_exclude_objects, l_coverage_schema_names);
@@ -115,6 +110,11 @@ create or replace package body ut_runner is
         l_external_coverage.add_profiler_units_to(l_include_object_names);
         l_suite_items := ut_suite_items(l_external_coverage);
       else
+	      if a_coverage_schemes is not empty then
+	        l_coverage_schema_names := ut_utils.convert_collection(a_coverage_schemes);
+	      else
+	        l_coverage_schema_names := ut_suite_manager.get_schema_names(a_paths);
+	      end if;
         l_suite_items := ut_suite_manager.configure_execution_by_path(a_paths);
       end if;
 
