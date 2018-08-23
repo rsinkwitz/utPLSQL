@@ -31,6 +31,8 @@ create user &ut3_user identified by &ut3_password default tablespace &ut3_tables
 
 grant create session, create sequence, create procedure, create type, create table, create view, create synonym to &ut3_user;
 
+grant DEBUG ANY PROCEDURE to &ut3_user;
+
 grant execute on dbms_lock to &ut3_user;
 
 grant execute on dbms_crypto to &ut3_user;
